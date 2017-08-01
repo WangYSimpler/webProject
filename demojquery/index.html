@@ -58,7 +58,7 @@
                     str+="<td>"+data[i].sex+"</td>";
                     str+="<td>"+data[i].age+"</td>";
                     str+="<td>"+data[i].classid+"</td>";
-                    str+="<td><a href=\"javascript:void(0);\" onclick='doDel("+data[i].id+",this)'>删除</a> &nbsp;&nbsp;<a href=\"javascript:void(0);\" onclick='doUpdate(data[i])'>编辑</a></td>";
+                    str+="<td><a href=\"javascript:void(0);\" onclick='doDel("+data[i].id+",this)'>删除</a> &nbsp;&nbsp;<a href=\"javascript:void(0);\" onclick='doUpdate()'>编辑</a></td>";
                     str+="</tr>";
                 }
                 $("#stuid tbody").empty();
@@ -93,8 +93,8 @@
 
 
         // 编辑函数
-        function doUpdate(d){
-            console.log(d);
+        function doUpdate(){
+            //console.log(d);
             addShow();
         }
         //删除函数
