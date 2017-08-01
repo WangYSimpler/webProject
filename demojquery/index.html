@@ -1,0 +1,219 @@
+<html>
+<head>
+    <title>jQuery实例</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+
+    </style>
+    <script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+
+            //调用加载数据,展示函数
+            loadstu();
+            //为添加按钮绑定一个添加动作
+            $("#aid").click(function(){
+                addShow();
+            });
+        });
+
+        $.fn.serializeObject = function(){
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        }
+
+        //点击增加显示
+        function addShow(){
+            $("#fill").show();
+            $("#myform").show();
+        }
+
+        //增加和修改关闭显示
+        function addHide(){
+            $('#fill').hide();
+            $('#myform').hide();
+        }
+
+        var data =  [{'id':1,'name':'王勇','sex':'m','age':'11','classid':'1'},{'id':2,'name':'苏州','sex':'w','age':'11','classid':'1'}];
+
+        //加载学生信息
+        function loadstu(){
+
+                var str='';
+                for(var i=0;i<data.length;i++){
+                    str+="<tr>";
+                    str+="<td>"+data[i].id+"</td>";
+                    str+="<td>"+data[i].name+"</td>";
+                    str+="<td>"+data[i].sex+"</td>";
+                    str+="<td>"+data[i].age+"</td>";
+                    str+="<td>"+data[i].classid+"</td>";
+                    str+="<td><a href=\"javascript:void(0);\" onclick='doDel("+data[i].id+",this)'>删除</a> &nbsp;&nbsp;<a href=\"javascript:void(0);\" onclick='doUpdate(data[i])'>编辑</a></td>";
+                    str+="</tr>";
+                }
+                $("#stuid tbody").empty();
+                $("#stuid tbody").append(str);
+
+           /**
+            * 测试
+            $.ajax({
+                url:"./model/action.php?a=index",
+                type:"GET",
+                dataType:"json",
+                success:function(data){
+                    //alert(data);
+                    var str=null;
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>";
+                        str+="<td>"+data[i].id+"</td>";
+                        str+="<td>"+data[i].name+"</td>";
+                        str+="<td>"+data[i].sex+"</td>";
+                        str+="<td>"+data[i].age+"</td>";
+                        str+="<td>"+data[i].classid+"</td>";
+                        str+="<td><a href=\"javascript:void(0);\" onclick='doDel("+data[i].id+",this)'>删除</a></td>";
+                        str+="</tr>";
+
+                    }
+                    $("#stuid tbody").empty();
+                    $("#stuid tbody").append(str);
+                }
+            });
+            //测试*/
+        }
+
+
+        // 编辑函数
+        function doUpdate(d){
+            console.log(d);
+            addShow();
+        }
+        //删除函数
+        function doDel(sid,ob){
+            if(confirm("确定要删除吗？")){
+                $(ob).parents("tr").remove();
+            }
+
+           /**
+            * 执行ajax删除
+            if(confirm("确定要删除吗？"))
+                $.ajax({
+                    url:"./model/action.php?a=del",
+                    type:"POST",
+                    data:{id:sid},
+                    dataType:"json",
+                    success:function(res){
+                        //判断是否删除成功
+                        if(res.num>0){
+                            //alert(res.num);
+                            $(ob).parents("tr").remove();
+                        }
+                    },
+                    error:function(){
+                        alert('error');
+                    }
+                });*/
+        }
+
+        //执行添加
+        function doAdd(form){
+            var jsonObj= ($('form').serializeObject());
+            data.push(jsonObj);
+            loadstu();//重新加载
+            addHide();//隐藏
+            //点击重置操作
+           $(form).find(":reset").trigger("click");
+            return false;
+         /**
+          *  添加操作
+            var dataform = $(form).serialize();
+            alert($(form).serialize());
+            $.ajax({
+                url:"./model/action.php?a=insert",
+                type:"POST",
+                data:$(form).serialize(),
+                dataType:"json",
+                success:function(res){
+                    if(res.id>0){
+                        $('#fill').hide();
+                        $('#myform').hide();
+                        $(form).find(":reset").trigger("click");
+                        loadstu();//重新加载
+                    }else{
+                        alert('添加失败！');
+                    }
+                }
+            });
+            return false;*/
+        }
+    </script>
+</head>
+<body>
+<h4>jQuery实例--Ajax信息的增删改查等操作</h4>
+
+<button id="aid">添加</button><br><br>
+<table id="stuid" width="700" border="1">
+    <thead>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>年龄</th>
+        <th>班级号</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div id="fill" style="width:100%;height:100%;background-color:#000;position:absolute;top:0px;left:0px;opacity:0.5;display:none;z-index:100">
+</div>
+
+<div id="myform" style="width:100%;height:100%;position:absolute;top:100px;left:100px;z-index:100;display:none">
+    <form  action="" method="post" onsubmit="return doAdd(this)">
+        <table   border="0" style="width:25%;height:25%; margin:10% auto;background-color:#fff">
+            <tr align="center">
+                <td>姓名：</td>
+                <td><input type='text' name="name"/></td>
+            </tr>
+            <tr>
+                <td>年龄：</td>
+                <td><input type='text' name="age"/></td>
+            </tr>
+            <tr>
+                <td>性别：</td>
+                <td>
+                    <input type='radio' name="sex" value="m"/>男
+                    <input type='radio' name="sex" value="w"/>女
+                </td>
+            </tr>
+            <tr>
+                <td>班级：</td>
+                <td><input type='text' name="classid"/></td>
+            </tr>
+            <tr>
+                <td >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type='submit' value="添加"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type='reset' value="重置"/>
+                    &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="button" onclick="addHide()" value="关闭"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
